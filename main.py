@@ -6,6 +6,7 @@ from time import sleep
 ul_sensor = UltraSonic()
 wireless_kb = Keyboard()
 player = AudioPlayer()
+last_wavtoplay = 0
 
 while True:
     # check distance
@@ -17,11 +18,16 @@ while True:
         # if key not in [46, 58], program will break - check in utils.Keyboard.getKey() line 65
         wavtoplay = wireless_kb.getKey()
 
-        # kill and play wavtoplay
-        player.fucking_killme()
-        player.fucking_runme(wavtoplay)
+        # check before if key pressed changes?, check 0 for first loop
+        if wavtoplay != last_wavtoplay and wavtoplay != 0:
+            # kill and play wavtoplay
+            player.fucking_killme()
+            player.fucking_runme(wavtoplay)
 
-        sleep(0.1)
+            last_wavtoplay = wavtoplay
+            sleep(0.1)
 
+        else:
+            pass
     else:
         print("out of range")
