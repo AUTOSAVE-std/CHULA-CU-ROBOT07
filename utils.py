@@ -28,17 +28,17 @@ class UltraSonic():
     def getDistance(self):
         print("Distance measurement in progress")
 
-        GPIO.output(TRIG, False)
+        GPIO.output(self.TRIG, False)
         time.sleep(0.1)
 
-        GPIO.output(TRIG, True)
+        GPIO.output(self.TRIG, True)
         time.sleep(0.00001)
-        GPIO.output(TRIG, False)
+        GPIO.output(self.TRIG, False)
 
-        while GPIO.input(ECHO)==0:
+        while GPIO.input(self.ECHO)==0:
           pulse_start = time.time()
 
-        while GPIO.input(ECHO)==1:
+        while GPIO.input(self.ECHO)==1:
           pulse_end = time.time()
 
         pulse_duration = pulse_end - pulse_start
