@@ -8,7 +8,7 @@ import signal
 GPIO.setmode(GPIO.BCM)
 ## not sure they are required?
 # import multiprocessing
-import pygame
+# import pygame
 
 
 class UltraSonic():
