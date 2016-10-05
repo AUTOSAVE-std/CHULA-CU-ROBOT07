@@ -5,8 +5,11 @@ import sys
 import getch
 import subprocess
 import signal
+GPIO.setmode(GPIO.BCM)
 ## not sure they are required?
 # import multiprocessing
+import pygame
+
 
 class UltraSonic():
     '''
@@ -26,10 +29,13 @@ class UltraSonic():
         GPIO.setup(self.ECHO, GPIO.IN)
 
     def getDistance(self):
-        print("Distance measurement in progress")
+        global pulse_duration
+        global pulse_end
+        global pulse_start
+        # print("Distance measurement in progress")
 
         GPIO.output(self.TRIG, False)
-        time.sleep(0.1)
+        time.sleep(0.5)
 
         GPIO.output(self.TRIG, True)
         time.sleep(0.00001)
@@ -49,22 +55,31 @@ class UltraSonic():
         return distance
 
 
-class Keyboard():
-    '''
-    Keyboard class
-    '''
+# class Keyboard():
+#     '''
+#     Keyboard class
+#     '''
+#     def __init__(self):
+#         self.key = 0
+#         pygame.init()
+#         pygame.display.init()
+#         os.environ["SDL_VIDEODRIVER"] = "dummy"
 
-    def __init__(self):
-        self.key = 0
+#     def getKey(self):
+#         events = pygame.event.get()
+#         keys=pygame.key.get_pressed()
+#         print(keys)
+#         for event in events:
+#             if event.type == pygame.K_0:
+#                 return 46
 
-    def getKey(self):
-        self.key =  ord(getch.getch())
+        # self.key =  ord(getch.getch())
 
-        if self.key not in list(range(46, 58)):
-            print("Wrong key was pressed! only allow number keypad..")
-            return 0
-        else:
-            return self.key
+        # if self.key not in list(range(46, 58)):
+        #     print("Wrong key was pressed! only allow number keypad..")
+        #     return 0
+        # else:
+        #     return self.key
 
 class AudioPlayer():
     '''
@@ -76,24 +91,24 @@ class AudioPlayer():
         self.player = subprocess.Popen("",shell=True, preexec_fn=os.setsid)
 
     def fucking_killme(self):
-    	if(self.player.poll() == None):
+        if(self.player.poll() == None):
             # return 1 in case successfully killed
-    		os.killpg(os.getpgid(self.player.pid), signal.SIGTERM)
+            os.killpg(os.getpgid(self.player.pid), signal.SIGTERM)
             print(self.player.pid, "was killed.")
             return 1
-    	else:
+        else:
             print("nothing to kill")
             return 0
 
     def fucking_runme(self, toplay):
-    	self.toPlay = toplay - 45
+        self.toPlay = toplay-45
 
-    	if(self.toPlay >= 10):
-    		string = "aplay %d.wav" % self.toPlay
-    	else:
-    		string = "aplay 0%d.wav" % self.toPlay
+        if(self.toPlay >= 10):
+            string = "aplay %d.wav" % self.toPlay
+        else:
+            string = "aplay 0%d.wav" % self.toPlay
 
-    	self.player = subprocess.Popen(string, stdout=subprocess.PIPE, shell=True, preexec_fn=os.setsid)
+        self.player = subprocess.Popen(string, stdout=subprocess.PIPE, shell=True, preexec_fn=os.setsid)
 
         # should be able to track from this obj
         return self.player
